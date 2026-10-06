@@ -1,0 +1,19 @@
+# folders
+.env
+.deepeval
+.logfire
+.rag
+.rag10
+**/.ipynb_checkpoints/
+**/__pycache__/
+notebooks/
+processed_data/
+Workaround/
+
+# files
+**/unit_run.ipynb
+**/__responder.py
+**/_golden_dataset.json
+enriched_golden_dataset.json
+**/_planner.py
+
