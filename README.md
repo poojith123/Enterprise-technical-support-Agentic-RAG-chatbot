@@ -9,27 +9,26 @@ The chatbot also incorporates input guardrails, LangGraph-based orchestration, L
   'theme': 'base',
   'themeVariables': {
     'fontSize': '13px',
-    'primaryTextColor': '#FFFFFF',
-    'textColor': '#FFFFFF',
     'lineColor': '#94A3B8',
-    'edgeLabelBackground': '#334155'
+    'edgeLabelBackground': '#1E293B',
+    'textColor': '#E2E8F0'
   },
   'flowchart': {
     'curve': 'stepAfter',
-    'nodeSpacing': 40,
-    'rankSpacing': 45
+    'nodeSpacing': 35,
+    'rankSpacing': 40
   }
 }}%%
 graph TD
-    %% Explicit Edge Label CSS Overrides for GitHub Dark Mode
-    classDef default fill:#1E293B,stroke:#64748B,stroke-width:1.5px,color:#FFFFFF;
+    %% 3-Color High-Contrast Palette
+    classDef default fill:#1E293B,stroke:#64748B,stroke-width:1.5px,color:#F8FAFC;
     classDef core fill:#0F172A,stroke:#3B82F6,stroke-width:1.5px,color:#93C5FD;
     classDef alert fill:#450A0A,stroke:#EF4444,stroke-width:1.5px,color:#FCA5A5;
 
-    %% Global Edge styling
+    %% Global Line Styling (Bright Slate for dark backgrounds)
     linkStyle default stroke:#94A3B8,stroke-width:1.5px;
 
-    %% Ingestion Pipeline
+    %% Ingestion Pipeline (Feeds Qdrant)
     Docs[Documents<br/>PDF, HTML]:::default --> Embed[Gemini Embeddings]:::default
     Embed --> DB[(Qdrant VectorDB)]:::default
 
@@ -40,7 +39,6 @@ graph TD
 
     %% Guardrail Decisions
     Guard -->|Blocked| BlockedMsg[Blocked Screen]:::alert
-    BlockedMsg --> UI
     Guard -->|Pass| Planner{Planner Node}:::core
 
     %% Planner Routing
@@ -52,7 +50,7 @@ graph TD
     Retriever --> Reranker[FlashRank Reranker]:::default
     Reranker --> Responder
 
-    %% Response Delivery & Memory
+    %% Response Delivery & State
     Responder -.-> Memory[(LangGraph Memory)]:::default
-    Responder -->|Return Response| UI
+    Responder --> Out[Streamlit Response View]:::default
 ```
