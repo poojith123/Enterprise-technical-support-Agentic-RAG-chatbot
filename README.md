@@ -5,12 +5,28 @@ The chatbot also incorporates input guardrails, LangGraph-based orchestration, L
 
 # Intelligent flow diagram
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'fontSize': '13px'}, 'flowchart': {'curve': 'stepAfter', 'nodeSpacing': 35, 'rankSpacing': 40}}}%%
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'fontSize': '13px',
+    'lineColor': '#94A3B8',
+    'edgeLabelBackground': '#1E293B',
+    'textColor': '#E2E8F0'
+  },
+  'flowchart': {
+    'curve': 'stepAfter',
+    'nodeSpacing': 35,
+    'rankSpacing': 40
+  }
+}}%%
 graph TD
-    %% 3-Color Clean Palette: Slate (Default), Blue (Core Agent), Rose (Alert)
-    classDef default fill:#1E293B,stroke:#475569,stroke-width:1.5px,color:#F8FAFC;
+    %% 3-Color High-Contrast Palette
+    classDef default fill:#1E293B,stroke:#64748B,stroke-width:1.5px,color:#F8FAFC;
     classDef core fill:#0F172A,stroke:#3B82F6,stroke-width:1.5px,color:#93C5FD;
     classDef alert fill:#450A0A,stroke:#EF4444,stroke-width:1.5px,color:#FCA5A5;
+
+    %% Global Line Styling (Bright Slate for dark backgrounds)
+    linkStyle default stroke:#94A3B8,stroke-width:1.5px;
 
     %% Ingestion Pipeline (Feeds Qdrant)
     Docs[Documents<br/>PDF, HTML]:::default --> Embed[Gemini Embeddings]:::default
