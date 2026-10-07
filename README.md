@@ -5,52 +5,39 @@ The chatbot also incorporates input guardrails, LangGraph-based orchestration, L
 
 # Intelligent flow diagram
 ```mermaid
-%%{init: {
-  'theme': 'base',
-  'themeVariables': {
-    'fontSize': '13px',
-    'lineColor': '#94A3B8',
-    'edgeLabelBackground': '#1E293B',
-    'textColor': '#E2E8F0'
-  },
-  'flowchart': {
-    'curve': 'stepAfter',
-    'nodeSpacing': 35,
-    'rankSpacing': 40
-  }
-}}%%
 graph TD
-    %% 3-Color High-Contrast Palette
-    classDef default fill:#1E293B,stroke:#64748B,stroke-width:1.5px,color:#F8FAFC;
+    %% 3-Color Dark Palette
+    classDef default fill:#1E293B,stroke:#64748B,stroke-width:1.5px,color:#FFFFFF;
     classDef core fill:#0F172A,stroke:#3B82F6,stroke-width:1.5px,color:#93C5FD;
     classDef alert fill:#450A0A,stroke:#EF4444,stroke-width:1.5px,color:#FCA5A5;
 
-    %% Global Line Styling (Bright Slate for dark backgrounds)
     linkStyle default stroke:#94A3B8,stroke-width:1.5px;
 
-    %% Ingestion Pipeline (Feeds Qdrant)
-    Docs[Documents<br/>PDF, HTML]:::default --> Embed[Gemini Embeddings]:::default
-    Embed --> DB[(Qdrant VectorDB)]:::default
-
-    %% User Request Flow
+    %% 1. USER AT THE VERY TOP
     User((User)):::default --> UI[Streamlit UI]:::default
     UI --> API[FastAPI /query]:::default
     API --> Guard{NeMo Guardrails}:::alert
 
-    %% Guardrail Decisions
+    %% 2. GUARDRAILS DECISION
     Guard -->|Blocked| BlockedMsg[Blocked Screen]:::alert
+    BlockedMsg -.-> UI
     Guard -->|Pass| Planner{Planner Node}:::core
 
-    %% Planner Routing
+    %% 3. PLANNER ROUTING
     Planner -->|Conversational| Responder[Responder Node]:::core
     Planner -->|Technical| Retriever[Retriever Node]:::default
 
-    %% Retrieval & Reranking
-    DB -.->|Query Match| Retriever
+    %% 4. INGESTION PIPELINE (Aligned horizontally to the side)
+    subgraph DataPipeline ["Data Store"]
+        Docs[Documents]:::default --> Embed[Gemini Embeddings]:::default --> DB[(Qdrant VectorDB)]:::default
+    end
+
+    %% Lateral retrieval link (does not pull hierarchy to top)
+    Retriever <-->|Search & Fetch| DB
     Retriever --> Reranker[FlashRank Reranker]:::default
     Reranker --> Responder
 
-    %% Response Delivery & State
+    %% 5. MEMORY & RETURN
     Responder -.-> Memory[(LangGraph Memory)]:::default
-    Responder --> Out[Streamlit Response View]:::default
+    Responder -->|Return Response| UI
 ```
